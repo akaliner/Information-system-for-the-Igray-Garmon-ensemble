@@ -1,0 +1,64 @@
+﻿@model _1.Models.User
+
+@{
+    ViewData["Title"] = "Создание нового пользователя";
+    var roles = ViewBag.Roles as List<_1.Models.Role>;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-danger text-white rounded-top-4">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+
+                <div class="card-body bg-light">
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Логин</label>
+                            <input asp-for="Login" class="form-control" />
+                            <span asp-validation-for="Login" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Пароль</label>
+                            <input asp-for="Password" type="password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Имя</label>
+                            <input asp-for="Name" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Фамилия</label>
+                            <input asp-for="Surname" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Отчество</label>
+                            <input asp-for="Middlename" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Телефон</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-danger me-2 px-4">Создать</button>
+                            <a href="/User/Index" class="btn btn-outline-secondary px-4">Отменить</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

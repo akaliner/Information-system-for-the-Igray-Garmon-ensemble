@@ -1,0 +1,204 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<section id="intro" class="mb-5" data-aos="fade-up">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-4 p-4">
+                <div class="d-flex flex-column justify-content-center h-100">
+                    <h2 class="mb-4">
+                        Молодежный ансамбль <br><strong>«Играй, гармонь!»</strong>
+                    </h2>
+                    <a href="#audition-form" class="btn btn-danger btn-lg align-self-start">Записаться</a>
+                </div>
+            </div>
+
+<div class="col-md-8">
+    <div id="carouselExample" class="carousel slide rounded-end-4 h-100" data-bs-ride="carousel" data-bs-interval="15000">
+        <div class="carousel-inner rounded-end-4" style="height: 600px;">
+
+            <div class="carousel-item active h-100">
+                <a href="/images/photo1.jpg" data-fancybox="gallery">
+                    <img src="/images/photo1.jpg" class="d-block w-100 h-100 img-fluid object-fit-cover" alt="Фото 1">
+                </a>
+            </div>
+
+            <div class="carousel-item h-100">
+                <a href="/images/photo2.jpg" data-fancybox="gallery">
+                    <img src="/images/photo2.jpg" class="d-block w-100 h-100 img-fluid object-fit-cover" alt="Фото 2">
+                </a>
+            </div>
+
+            <div class="carousel-item h-100">
+                <a href="/images/photo3.jpg" data-fancybox="gallery">
+                    <img src="/images/photo3.jpg" class="d-block w-100 h-100 img-fluid object-fit-cover" alt="Фото 3">
+                </a>
+            </div>
+
+            <div class="carousel-item h-100">
+                <a href="/images/photo4.jpg" data-fancybox="gallery">
+                    <img src="/images/photo4.jpg" class="d-block w-100 h-100 img-fluid object-fit-cover" alt="Фото 4">
+                </a>
+            </div>
+
+            <div class="carousel-item h-100">
+                <a href="/images/photo5.jpg" data-fancybox="gallery">
+                    <img src="/images/photo5.jpg" class="d-block w-100 h-100 img-fluid object-fit-cover" alt="Фото 5">
+                </a>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+            <span class="visually-hidden">Предыдущее</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+            <span class="visually-hidden">Следующее</span>
+        </button>
+    </div>
+</div>
+
+        </div>
+    </div>
+</section>
+
+<section id="audition-form" class="mb-5" data-aos="fade-up" data-aos-delay="150">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+            <h2 class="card-title text-center mb-3">
+                <i class="bi bi-mic-fill me-2 text-danger"></i>Запись на прослушивание
+            </h2>
+            <p class="text-center mb-4">
+                Пожалуйста, заполните форму ниже, чтобы записаться на прослушивание:
+            </p>
+
+            <div id="formMessage" class="alert d-none text-center"></div>
+
+            <form id="auditionForm" method="post" action="/Home/SubmitRequest" class="mx-auto" style="max-width: 600px;">
+                <div class="form-group mb-3">
+                    <label for="Name" class="form-label">Имя:</label>
+                    <input type="text" class="form-control form-control-lg" id="Name" name="Name" required />
+                </div>
+                <div class="form-group mb-4">
+                    <label for="PhoneNumber" class="form-label">Номер телефона:</label>
+                    <input type="text" class="form-control form-control-lg" id="PhoneNumber" name="PhoneNumber" required
+                           pattern="^\d{11}$" maxlength="11"
+                           title="Номер телефона должен содержать ровно 11 цифр." />
+                    <small class="form-text text-muted">Введите номер телефона без пробелов и дефисов.</small>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-danger btn-lg px-5">Записаться</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+    <section id="about" class="mb-5" data-aos="fade-up">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-3">
+                    <i class="bi bi-info-circle-fill me-2 text-primary"></i>О нас
+                </h2>
+                <p class="card-text fs-5">
+                    Творческий коллектив <strong>«Играй, гармонь!»</strong> — это место, где каждый может раскрыть свой талант в музыке, вокале и хореографии. Мы вдохновляем, обучаем и объединяем людей всех возрастов, стремящихся к творческому самовыражению.
+                </p>
+                <p class="card-text fs-5">
+                    В нашем коллективе занимаются ребята от 3 до 25 лет. Детей и молодежь приобщают к самому широкому спектру русского народного инструментария: ложки, гусли, жалейки, свирели, рожки, свистульки, кугиклы, гармони и другие разновидности фольклорных инструментов.
+                </p>
+                <p class="card-text fs-5">
+				Молодежный ансамбль "Играй, гармонь!" был организован в 1992 году. Руководители коллектива в настоящее время: Примеров Николай Андреевич и Векессер Виктория Александровна.
+                </p>
+            </div>
+        </div>
+    </section>
+
+<section id="news" class="mb-5" data-aos="fade-up">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+            <h2 class="card-title mb-4">
+                <i class="bi bi-newspaper me-2 text-warning"></i>Новости
+            </h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="/images/news1.jpg" class="card-img-top" alt="Новость 1">
+                        <div class="card-body">
+                            <p class="card-text">10 мая мы приняли участие во всероссийском конкурсе "Сибирская Матрешка" в Томске!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="/images/news2.jpg" class="card-img-top" alt="Новость 2">
+                        <div class="card-body">
+                            <p class="card-text">Открыт новый набор детей с 3-х лет!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="/images/news3.jpg" class="card-img-top" alt="Новость 3">
+                        <div class="card-body">
+                            <p class="card-text">8 апреля прошел наш концерт "Мы с тобой, Россия, мы - одна семья!"! До новых встреч!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <section id="contacts" data-aos="fade-up" data-aos-delay="300">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-3">
+                    <i class="bi bi-telephone-fill me-2 text-success"></i>Контакты
+                </h2>
+                <p class="fs-5 mb-2">
+                    <i class="bi bi-geo-alt-fill me-2 text-danger"></i><strong>Адрес:</strong> г. Новосибирск, ул. Челюскинцев, д. 11
+                </p>
+                <p class="fs-5 mb-2">
+                    <i class="bi bi-telephone-fill me-2 text-success"></i><strong>Телефон:</strong> +7 (999) 999-99-99
+                </p>
+                <p class="fs-5">
+                    <i class="bi bi-envelope-fill me-2 text-primary"></i><strong>Email:</strong> igraigarmon@example.com
+                </p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $('#auditionForm').on('submit', function (e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const data = form.serialize();
+                const messageDiv = $('#formMessage');
+
+                $.post(form.attr('action'), data)
+                    .done(function (response) {
+                        form.trigger('reset');
+                        messageDiv.removeClass('d-none alert-danger').addClass('alert-success').text('Заявка успешно отправлена!');
+                    })
+                    .fail(function () {
+                        messageDiv.removeClass('d-none alert-success').addClass('alert-danger').text('Произошла ошибка при отправке. Пожалуйста, попробуйте позже.');
+                    });
+            });
+        });
+    </script>
+    }

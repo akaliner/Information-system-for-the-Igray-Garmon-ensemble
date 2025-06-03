@@ -1,0 +1,176 @@
+﻿@model List<AuditionWithRequestViewModel>
+@{
+    ViewData["Title"] = "Прослушивания";
+}
+<form style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<h2>Прослушивания</h2>
+
+<div class="container mt-5">
+    <table class="table table-hover">
+        <thead class="bg-danger text-white">
+            <tr>
+                <th>Имя</th>
+                <th>Телефон</th>
+                <th>Дата заявки</th>
+                <th>Дата прослушивания</th>
+                <th>Ответственный</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                string rowClass = "";
+                bool isAuditionPassed = item.AuditionDate != DateTime.MinValue && item.AuditionDate < DateTime.Now;
+                bool isEditable = item.AuditionDate == DateTime.MinValue || !isAuditionPassed;
+
+                // Проставляем цвет для строк в зависимости от состояния прослушивания
+                if (isAuditionPassed)
+                {
+                    rowClass = "";  // Белый фон для прошедших прослушиваний
+                }
+                else if (item.AuditionDate != DateTime.MinValue)
+                {
+                    rowClass = "table-success";  // Зеленый фон для назначенных, но не прошедших прослушиваний
+                }
+                else
+                {
+                    rowClass = "table-danger";  // Красный фон для не назначенных
+                }
+
+                <tr class="@rowClass">
+                    <td>@item.Name</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>@item.RequestDate.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        @(item.AuditionDate != DateTime.MinValue
+                            ? item.AuditionDate.ToString("dd.MM.yyyy HH:mm")
+                            : "Не назначено")
+                    </td>
+                    <td>@(item.ResponsibleEmployeeName ?? "-")</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#assignModal"
+                                data-id="@item.AuditionRequestId"
+                                data-date="@(item.AuditionDate != DateTime.MinValue ? item.AuditionDate.ToString("yyyy-MM-ddTHH:mm") : "")"
+                                data-responsible="@item.ResponsibleEmployeeId"
+                        @(isEditable ? "" : "disabled")>
+                            @(item.AuditionDate != DateTime.MinValue ? "Редактировать" : "Назначить")
+                        </button>
+
+                        @if (item.AuditionDate != DateTime.MinValue && item.AuditionDate >= DateTime.Now)
+                        {
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary ms-1 btn-cancel-audition"
+                                    data-id="@item.AuditionRequestId">
+                                Отмена
+                            </button>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Модалка Назначить/Редактировать Прослушивание -->
+    <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="AssignAudition" method="post">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="assignModalLabel">Назначить прослушивание</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="auditionRequestId" name="auditionRequestId" />
+
+                        <div class="mb-3">
+                            <label for="auditionDate" class="form-label">Дата и время прослушивания</label>
+                            <input type="datetime-local" class="form-control" id="auditionDate" name="auditionDate" required
+                                   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="responsibleEmployeeId" class="form-label">Ответственный</label>
+                            <select class="form-select" id="responsibleEmployeeId" name="responsibleEmployeeId" required>
+                                <option value="">Выберите руководителя</option>
+                                @foreach (var leader in (List<User>)ViewBag.Leaders)
+                                {
+                                    <option value="@leader.Id">@leader.Surname @leader.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Сохранить</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        var assignModal = document.getElementById('assignModal');
+        assignModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var requestId = button.getAttribute('data-id');
+            var auditionDate = button.getAttribute('data-date');
+            var responsibleId = button.getAttribute('data-responsible');
+
+            document.getElementById('auditionRequestId').value = requestId;
+
+            if (auditionDate) {
+                document.getElementById('auditionDate').value = auditionDate;
+            } else {
+                document.getElementById('auditionDate').value = '';
+            }
+
+            if (responsibleId) {
+                document.getElementById('responsibleEmployeeId').value = responsibleId;
+            } else {
+                document.getElementById('responsibleEmployeeId').selectedIndex = 0;
+            }
+        })
+    </script>
+
+    <script>
+        document.querySelectorAll('.btn-cancel-audition').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                if (!confirm("Вы уверены, что хотите отменить прослушивание?")) return;
+
+                const requestId = this.dataset.id;
+
+                const response = await fetch('/Auditions/CancelAudition', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ auditionRequestId: parseInt(requestId) })
+                });
+
+                if (response.ok) {
+                    const row = this.closest('tr');
+                    row.className = 'table-danger';
+                    row.querySelector('td:nth-child(4)').innerText = "Не назначено";
+                    row.querySelector('td:nth-child(5)').innerText = "-";
+
+                    const btnEdit = row.querySelector('button[data-bs-target="#assignModal"]');
+                    btnEdit.innerText = "Назначить";
+                    this.remove();
+                } else {
+                    alert("Ошибка при отмене прослушивания.");
+                }
+            });
+        });
+    </script>
+}

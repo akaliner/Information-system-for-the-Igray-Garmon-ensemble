@@ -1,0 +1,139 @@
+﻿@using System.Linq
+@model IEnumerable<_1.Models.RepertoireEntry>
+
+@{
+    bool isEditable = User.IsInRole("Администратор") || User.IsInRole("Руководитель");
+    var editorIndex = 0;
+}
+
+<h2>Репертуар</h2>
+
+<style>
+    .view-content {
+        color: black !important;
+    }
+</style>
+
+@if (isEditable)
+{
+    <form asp-action="Add" method="post">
+        <textarea name="htmlContent" id="newEntryEditor"></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Добавить</button>
+    </form>
+}
+
+<hr />
+
+@foreach (var entry in Model)
+{
+    var entryId = $"entry_{editorIndex++}";
+    string[] lines = entry.HtmlContent.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+    var firstLine = lines.FirstOrDefault() ?? "";
+    var rest = string.Join("<br/>", lines.Skip(1));
+    var restId = $"rest_{entry.Id}";
+    var toggleId = $"toggle_{entry.Id}";
+
+    <div class="border p-3 mb-3" id="@entryId">
+        <div class="view-content">
+            <div>@Html.Raw(firstLine)</div>
+
+            @if (!string.IsNullOrWhiteSpace(rest))
+            {
+                <div id="@restId" class="mt-2 d-none">
+                    @Html.Raw(rest)
+                </div>
+                <button class="btn btn-link p-0 mt-2 toggle-btn" data-target="#@restId" data-toggle-id="#@toggleId">
+                    <span id="@toggleId">Показать больше</span>
+                </button>
+            }
+
+            @if (isEditable)
+            {
+                <button type="button" class="btn btn-sm btn-danger mt-2 btn-edit" data-entry-id="@entryId">Редактировать</button>
+                <form asp-action="Delete" method="post" class="d-inline-block ms-2">
+                    <input type="hidden" name="id" value="@entry.Id" />
+                    <button type="submit" class="btn btn-sm btn-secondary">Удалить</button>
+                </form>
+            }
+        </div>
+
+        @if (isEditable)
+        {
+            <form asp-action="Edit" method="post" class="edit-form d-none mt-2">
+                <input type="hidden" name="id" value="@entry.Id" />
+                <textarea name="htmlContent" class="editor">@entry.HtmlContent</textarea>
+                <div class="mt-2">
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                    <button type="button" class="btn btn-secondary btn-cancel" data-entry-id="@entryId">Отмена</button>
+                </div>
+            </form>
+        }
+    </div>
+}
+
+@section Scripts {
+    @if (isEditable)
+    {
+        <script src="/lib/ckeditor/ckeditor.js"></script>
+        <script>
+            // Подключение CKEditor к полю "Добавить"
+            CKEDITOR.replace('newEntryEditor');
+
+            // Подключение CKEditor к textarea в форме редактирования
+            const initCKEditor = (textarea) => {
+                if (!textarea.id) {
+                    textarea.id = 'editor_' + Math.random().toString(36).substring(2, 10);
+                }
+                CKEDITOR.replace(textarea.id);
+            };
+
+            // Показ формы редактирования
+            document.querySelectorAll('.btn-edit').forEach(button => {
+                button.addEventListener('click', () => {
+                    const container = document.getElementById(button.dataset.entryId);
+                    const view = container.querySelector('.view-content');
+                    const form = container.querySelector('.edit-form');
+
+                    view.classList.add('d-none');
+                    form.classList.remove('d-none');
+
+                    const textarea = form.querySelector('textarea');
+                    if (!textarea.dataset.ckeditorInitialized) {
+                        initCKEditor(textarea);
+                        textarea.dataset.ckeditorInitialized = "true";
+                    }
+                });
+            });
+
+            // Отмена редактирования
+            document.querySelectorAll('.btn-cancel').forEach(button => {
+                button.addEventListener('click', () => {
+                    const container = document.getElementById(button.dataset.entryId);
+                    const view = container.querySelector('.view-content');
+                    const form = container.querySelector('.edit-form');
+
+                    form.classList.add('d-none');
+                    view.classList.remove('d-none');
+                });
+            });
+        </script>
+    }
+
+    <script>
+
+        document.querySelectorAll('.toggle-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const target = document.querySelector(button.dataset.target);
+                const toggleText = document.querySelector(button.dataset.toggleId);
+
+                if (target.classList.contains('d-none')) {
+                    target.classList.remove('d-none');
+                    toggleText.textContent = 'Скрыть';
+                } else {
+                    target.classList.add('d-none');
+                    toggleText.textContent = 'Показать больше';
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,52 @@
+﻿@model _1.Models.User
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-danger text-white rounded-top-4">
+                    <h2 class="mb-0">Личный кабинет</h2>
+                </div>
+
+                <div class="card-body bg-light">
+                    @if (Model != null)
+                    {
+                        <h4 class="card-title">@Model.Surname @Model.Name</h4>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item">
+                                <strong>Email:</strong> @Model.Email
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Телефон:</strong> @Model.PhoneNumber
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Роли:</strong> @string.Join(", ", Model.Roles.Select(r => r.Name))
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Логин:</strong> @Model.Login
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Пользователь не найден.</p>
+                    }
+
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Edit", "Account", new { id = Model.Id })" class="btn btn-danger px-4">
+                            <i class="bi bi-pencil-square me-1"></i> Редактировать
+                        </a>
+                        <a href="@Url.Action("ChangePassword", "Account")" class="btn btn-secondary px-4">
+                            <i class="bi bi-lock me-1"></i> Изменить пароль
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

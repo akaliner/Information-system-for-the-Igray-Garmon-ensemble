@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Личный кабинет";
+    var userName = TempData["UserName"] as string ?? "пользователь";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-danger text-white rounded-top-4 text-center">
+                    <h2 class="mb-0">Добро пожаловать!</h2>
+                </div>
+
+                <div class="card-body bg-light text-center">
+                    <h4 class="card-title mb-3">Приветствуем, <span class="text-danger">@userName</span>!</h4>
+                    <p class="lead">Вы успешно вошли в личный кабинет.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

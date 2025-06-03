@@ -1,0 +1,189 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Творческий коллектив "Играй, гармонь!"</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto;
+            padding-top: 80px;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+
+        .navbar-hidden {
+            transform: translateY(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .navbar-visible {
+            transform: translateY(0);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .fixed-navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+        }
+    </style>
+
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+
+<body>   
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-danger px-4">
+            <a class="navbar-brand" href="/">
+                <img src="~/images/logo2.png" alt="Логотип" style="height: 50px;" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        var isAdminOrHead = User.IsInRole("Администратор") || User.IsInRole("Руководитель");
+                        var isTeacher = User.IsInRole("Преподаватель вокала") || User.IsInRole("Преподаватель инструмента") || User.IsInRole("Преподаватель хореографии");
+                        var isStudent = User.IsInRole("Старшая группа  (вокал)") || User.IsInRole("Младшая группа (вокал)") ||
+                        User.IsInRole("Инструментальный ансамбль") || User.IsInRole("Ансамбль гармонистов") ||
+                        User.IsInRole("Ансамбль ложкарей");
+
+                        var showSchedule = isAdminOrHead || isTeacher || isStudent;
+                        var showAuditions = isAdminOrHead;
+                        var showUsers = isAdminOrHead || isTeacher;
+                        var showAccount = isAdminOrHead || isTeacher || isStudent;
+
+                        if (showSchedule)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Schedule" asp-action="Index">Расписание</a>
+                            </li>
+                        }
+
+                        if (showAuditions)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Auditions" asp-action="Index">Прослушивания</a>
+                            </li>
+                        }
+
+                        if (showUsers)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="User" asp-action="Index">Участники</a>
+                            </li>
+                        }
+
+                        if (showAccount)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Profile">Аккаунт</a>
+                            </li>
+                        }
+
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Repertoire" asp-action="Index">Репертуар</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="nav-link text-white bg-transparent border-0" style="cursor: pointer;">Выход</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#audition-form">Запись</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#about">О нас</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#news">Новости</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#contacts">Контакты</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Account" asp-action="Login">Личный кабинет</a>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </nav>
+    </header>
+
+    <main class="container py-4">
+        <br/>
+        <br/>
+        <br/>
+        @RenderBody()
+    </main>
+
+    <footer class="text-center py-3">
+        <small>г. Новосибирск, ул. Челюскинцев, д. 11. Телефон для связи: +7 (999) 999-99-99</small><br/>
+        <small>&copy; @DateTime.Now.Year Творческий коллектив "Играй, гармонь!". Все права защищены.</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/@@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <script>
+        Fancybox.bind("[data-fancybox='gallery']", {
+            
+        });
+    </script>
+
+    <script>
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.navbar');
+
+        navbar.classList.add('fixed-navbar', 'navbar-visible');
+
+        window.addEventListener('scroll', function () {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (currentScroll > lastScrollTop && currentScroll > 100) {
+                navbar.classList.remove('navbar-visible');
+                navbar.classList.add('navbar-hidden');
+            } else {     
+                navbar.classList.remove('navbar-hidden');
+                navbar.classList.add('navbar-visible');
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        }, false);
+    </script>
+</body>
+</html>

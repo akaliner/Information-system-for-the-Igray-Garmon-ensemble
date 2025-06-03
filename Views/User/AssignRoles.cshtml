@@ -1,0 +1,42 @@
+﻿@model _1.Models.User
+
+@{
+    ViewData["Title"] = "Назначение ролей";
+    var allRoles = ViewBag.AllRoles as List<_1.Models.Role>;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-danger text-white rounded-top-4">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+
+                <div class="card-body bg-light">
+                    <h5 class="mb-4">Пользователь: <strong>@Model.Name @Model.Surname</strong></h5>
+
+                    <form asp-action="AssignRoles" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div class="mb-4">
+                            @foreach (var role in allRoles)
+                            {
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="selectedRoles[]" value="@role.Id"
+                                    @(Model.Roles.Any(r => r.Id == role.Id) ? "checked" : "") />
+                                    <label class="form-check-label">@role.Name</label>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-danger me-2 px-4">Сохранить</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

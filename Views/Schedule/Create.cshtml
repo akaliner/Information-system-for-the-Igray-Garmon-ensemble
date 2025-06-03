@@ -1,0 +1,73 @@
+﻿@model ScheduleViewModel
+
+@{
+    ViewData["Title"] = "Создать событие";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="shadow-lg border-0 rounded-4">
+                <div class="bg-danger text-white rounded-top-4 p-3">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+
+                <div class="bg-light p-4">
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label class="text-danger fw-bold">Название события</label>
+                            <input asp-for="EventName" class="form-control" placeholder="Введите название события" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-danger fw-bold">Тип события</label>
+                            <select asp-for="EventId" class="form-control" asp-items="@(new SelectList(ViewData["Events"] as List<_1.Models.Event>, "Id", "Name"))">
+                                <option value="">Выберите событие</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-danger fw-bold">Группы</label>
+                            <div class="border rounded p-2">
+                                @foreach (var role in ViewData["Roles"] as List<_1.Models.Role>)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="RoleIds" value="@role.Id" />
+                                        <label class="form-check-label">@role.Name</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-danger fw-bold">Начало</label>
+                            <input asp-for="StartTime" class="form-control" type="datetime-local" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-danger fw-bold">Окончание</label>
+                            <input asp-for="EndTime" class="form-control" type="datetime-local" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-danger fw-bold">Место</label>
+                            <input asp-for="Location" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-danger fw-bold">Доп. информация</label>
+                            <input asp-for="AdditionalInfo" class="form-control" />
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-danger me-2 px-4">Сохранить</button>
+                            <a href="@Url.Action("Index", "Schedule")" class="btn btn-outline-secondary px-4">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

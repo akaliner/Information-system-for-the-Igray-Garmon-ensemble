@@ -1,0 +1,101 @@
+﻿@model List<_1.Models.User>
+
+@{
+    ViewData["Title"] = "Список пользователей";
+    bool isAdminOrLeader = User.IsInRole("Администратор") || User.IsInRole("Руководитель");
+}
+
+<h2>Список участников коллектива</h2>
+
+@if (User.IsInRole("Администратор"))
+{
+    <a href="@Url.Action("Create")" class="btn btn-sm btn-danger mb-3" style="float: right;">Создать аккаунт</a>
+}
+
+@{
+    var selectedRole = ViewBag.SelectedRole as string;
+    var searchQuery = ViewBag.SearchQuery as string;
+    var rolesList = ViewBag.Roles as List<string> ?? new List<string>();
+}
+<form method="get" class="row mb-3 justify-content-end">
+    <div class="col-md-3">
+        <input type="text" name="search" value="@searchQuery" class="form-control" placeholder="Поиск по имени или фамилии" />
+    </div>
+    <div class="col-md-2">
+        <select name="role" class="form-select">
+            <option value="">Все роли</option>
+                @foreach (var role in rolesList)
+                {
+                    <option value="@role" selected="@(role == selectedRole ? "selected" : null)">
+                        @role
+                    </option>
+                }   
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+    </div>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Телефон</th>
+            <th>Email</th>
+
+            @if (isAdminOrLeader)
+            {
+                <th>Логин</th>
+                <th>Роли</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            if (!isAdminOrLeader && !user.IsActive)
+            {
+                continue;
+            }
+
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.Surname</td>
+                <td>@user.PhoneNumber</td>
+                <td>@user.Email</td>
+
+                @if (isAdminOrLeader)
+                {
+                    <td>@user.Login</td>
+                    <td>
+                        @foreach (var role in user.Roles)
+                        {
+                            <span>@role.Name</span>
+
+                            <br />
+                        }
+                    </td>
+                    <td>
+                        <span class="badge @(user.IsActive ? "bg-success" : "bg-danger")">
+                            @(user.IsActive ? "Активен" : "Неактивен")
+                        </span>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = user.Id })" class="btn btn-sm btn-danger me-2">Редактировать</a>
+                        <a href="@Url.Action("AssignRoles", new { id = user.Id })" class="btn btn-sm btn-outline-danger me-2">Назначить роли</a>
+                        <form method="post" asp-action="ChangeStatus" asp-route-id="@user.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                @(user.IsActive ? "Деактивировать" : "Активировать")
+                            </button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,45 @@
+﻿@model _1.Models.Schedule
+
+@{
+    ViewData["Title"] = "Подтверждение удаления";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="shadow-lg border-0 rounded-4">
+                <div class="bg-danger text-white rounded-top-4 p-3">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+
+                <div class="bg-light p-4">
+                    <h5 class="text-danger">Вы уверены, что хотите удалить запись из расписания?</h5>
+                    <div class="alert alert-warning">
+                        <p><strong>Событие:</strong> @Model.Event?.Name</p>
+                        <p>
+                            <strong>Группа:</strong>
+                            @foreach (var role in Model.ScheduleRoles)
+                            {
+                                <span>@role.Role?.Name</span>
+                                <br />
+                            }
+                        </p>
+                        <p><strong>Начало:</strong> @Model.StartTime?.ToString("g")</p>
+                        <p><strong>Окончание:</strong> @Model.EndTime?.ToString("g")</p>
+                        <p><strong>Место:</strong> @Model.Location</p>
+                        <p><strong>Дополнительно:</strong> @Model.AdditionalInfo</p>
+                    </div>
+
+                    <form method="post" action="@Url.Action("DeleteConfirmed", "Schedule", new { id = Model.Id })">
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-danger me-2 px-4">Удалить</button>
+                            <a href="@Url.Action("Index", "Schedule")" class="btn btn-outline-secondary px-4">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
